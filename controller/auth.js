@@ -64,8 +64,8 @@ const resetPassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'youremail@gmail.com',
-        pass: 'yourpassword'
+        user: 'tisma@gmail.com',
+        pass: '360dev'
       }
     });
 
@@ -79,7 +79,7 @@ const resetPassword = async (req, res) => {
 
       // Use Nodemailer to send the reset email
       const mailOptions = {
-        from: 'your_email@gmail.com',
+        from: 'tisma@gmail.com',
         to: email,
         subject: 'Password Reset',
         text: `Click the following link to reset your password: ${resetLink}`,
