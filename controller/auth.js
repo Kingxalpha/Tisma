@@ -1,18 +1,24 @@
 const userModel = require("../model/User");
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const nodemailer = require("nodemailer");
+const secretkey = process.env.secret_key;
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const resetToken = process.env.reset_Token;
+
 
 // const secret_key = crypto.randomBytes(32).toString('hex');
 // console.log(secret_key);
 
-  // const token = crypto.randomBytes(32).toString('hex');
-  // console.log(token);
-
+//  REGISTER
 
 const signUp= async(req, res)=>{
   const {fullname, email, businessname, phonenumber, businessaddress, password, bvn } = req.body;
   try {
     const newUser = await userModel.findOne({ email });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
     if (!newUser) {
       // User does not exist, create a new one
       const user = await userModel.create({
@@ -21,16 +27,13 @@ const signUp= async(req, res)=>{
         phonenumber,
         businessname,
         businessaddress,
-        password,
+        password: hashedPassword,
         bvn
       });
-        // token generator
-      const token = jwt.sign({email: user.email }, 'secret_key');
 
-      res.json({ msg: 'New User Created!!!', token });
+      res.json({ msg: 'New User Created!!!'});
     } else {
       // User already exists
-      console.log('User already exists!!!');
       res.status(409).json({ msg: 'User Already Exists' });
     }
   } catch (error) {
@@ -39,28 +42,29 @@ const signUp= async(req, res)=>{
   }
 };
 
+// LOGIN
+
 const login = async (req, res) => {
     const { email, password } = req.body;
     try {
-      const user = await userModel.findOne({ email });
-  
-      if (user) {
-        // Check if the provided password matches the stored password
-        if (user.password === password) {
-          // Token Generator
-          const token = jwt.sign({email: user.email }, 'secret_key');
-          res.json({ msg: "Login successful", user, token });
-        } else {
-          res.status(401).json({ msg: "Incorrect Password" });
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json("User not found");
         }
-      } else {
-        res.status(404).json({ msg: "Email Not Registered" });
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: "Server Error" });
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(400).json("Wrong password");
+        }
+        jwt.sign({email, id : user._id}, secretkey, {}, (error, token)=>{
+          if(error) throw new error
+          res.cookie("token", token).json({"msg" : "User successfully logged in!", "user": user})
+        });
+    } catch (err) {
+        res.status(500).json(err);
     }
 };
+
 
 const resetPassword = async (req, res) => {
   const { email } = req.body;
@@ -106,6 +110,28 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ msg: "Server Error" });
   }
 };
+
+
+// const logOut = async (req, res) => {
+//   const { email, password } = req.body;
+//   try {
+//       const user = await userModel.findOne({ email });
+//       if (!user) {
+//           return res.status(404).json("User not found");
+//       }
+
+//       const validPassword = await bcrypt.compare(password, user.password);
+//       if (!validPassword) {
+//           return res.status(400).json("Wrong password");
+//       }
+//       jwt.sign({email, id : user._id}, secretkey, {}, (error, token)=>{
+//         if(error) throw new error
+//         res.cookie("token", ' ').json({"msg" : "User successfully logged in!", "user": user})
+//       });
+//   } catch (err) {
+//       res.status(500).json(err);
+//   }
+// };
 
 
 

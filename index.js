@@ -3,10 +3,9 @@ const DB = require("./db/connectDB");
 const connectDB = require("./db/connectDB");
 const bodyParser = require("body-parser");
 const port = 8000;
-const User = require("./model/User");
+const user = require("./model/User");
 const router = require("./routes/handler");
-const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
+
 
 const app = express();
 
