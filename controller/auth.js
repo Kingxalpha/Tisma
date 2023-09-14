@@ -65,74 +65,68 @@ const login = async (req, res) => {
     }
 };
 
+// RESET PASSWORD
 
-const resetPassword = async (req, res) => {
-  const { email } = req.body;
-  try {
-    const user = await userModel.findOne({ email });
+  const generateResetToken = () => {
+    const token = crypto.randomBytes(32).toString('hex'); // Generate a random token
+    return token;
+  };
 
-    if (user) {
-      // Generate a secure and unique reset token
-      const resetToken = generateResetToken();
+  const resetPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await userModel.findOne({ email });
 
-      // Update the user document with the reset token and expiration date
-      user.resetToken = resetToken;
-      user.resetTokenExpiration = Date.now() + 3600000; // Token expires in 1 hour
-      await user.save();
+        if (user) {
+            // Generate a secure and unique reset token
+            const resetToken = generateResetToken();
 
-      // Send an email with the reset link
-      const resetLink = `http://localhost:8000/reset-password/${resetToken}`;
+            // Update the user document with the reset token and expiration date
+            user.resetToken = resetToken;
+            user.resetTokenExpiration = Date.now() + 3600000; // Token expires in 1 hour
+            await user.save();
 
-      // Use Nodemailer to send the reset email
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_USERNAME,
-          pass: process.env.EMAIL_PASSWORD
+            // Send an email with the reset link
+            const resetLink = `http://localhost:8000/reset-password/${resetToken}`;
+
+            // Use Nodemailer to send the reset email
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USERNAME,
+                    pass: process.env.EMAIL_PASSWORD
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.EMAIL_USERNAME,
+                to: email,
+                subject: 'Password Reset',
+                text: `Click the following link to reset your password: ${resetLink}`,
+            };
+
+            await transporter.sendMail(mailOptions);
+
+            res.json({ msg: "Password reset instructions sent to your email." });
+        } else {
+            res.status(404).json({ msg: "Email Not Registered" });
         }
-      });
-
-      const mailOptions = {
-        from: process.env.EMAIL_USERNAME,
-        to: email,
-        subject: 'Password Reset',
-        text: `Click the following link to reset your password: ${resetLink}`,
-      };
-
-      await transporter.sendMail(mailOptions);
-
-      res.json({ msg: "Password reset instructions sent to your email." });
-    } else {
-      res.status(404).json({ msg: "Email Not Registered" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Server Error" });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "Server Error" });
-  }
-};
+  };
 
+  // LOGOUT
+  
+  const logOut = (req, res) => {
+    const token = req.cookies.token || req.headers.authorization;
 
-// const logOut = async (req, res) => {
-//   const { email, password } = req.body;
-//   try {
-//       const user = await userModel.findOne({ email });
-//       if (!user) {
-//           return res.status(404).json("User not found");
-//       }
-
-//       const validPassword = await bcrypt.compare(password, user.password);
-//       if (!validPassword) {
-//           return res.status(400).json("Wrong password");
-//       }
-//       jwt.sign({email, id : user._id}, secretkey, {}, (error, token)=>{
-//         if(error) throw new error
-//         res.cookie("token", ' ').json({"msg" : "User successfully logged in!", "user": user})
-//       });
-//   } catch (err) {
-//       res.status(500).json(err);
-//   }
-// };
-
+    if (!token) {
+        return res.status(401).json("No token found");
+    }
+    res.cookie("token", "", { expires: new Date(0) }).json({ message: "User successfully logged out" });
+  };
 
 
 
@@ -146,4 +140,5 @@ const resetPassword = async (req, res) => {
     signUp,
     login,
     resetPassword,
+    logOut
  }
