@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const DB = require("./db/connectDB");
 const connectDB = require("./db/connectDB");
@@ -7,7 +8,6 @@ const user = require("./model/User");
 const Product= require("./model/Product")
 const multer  = require("multer");
 const router = require("./routes/handler");
-
 
 const app = express();
 

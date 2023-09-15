@@ -18,7 +18,7 @@ router.route("/reset-password").post(resetPassword);
 router.route("/logout").post(logOut);
 router.route("/updatepassword").patch(updatePassword);
 router.route("/:userId/follow").post(followUp);
-router.route("/:userId/unfollow").post(unfollowUp);
+// router.route("/:userId/unfollow").post(unfollowUp);
 router.route("/upload/product").post(upload.single('image'), addProduct)
 router.route("/product").get(getProduct)
 
