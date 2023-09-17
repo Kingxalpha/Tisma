@@ -1,4 +1,6 @@
 const userModel = require("../model/User");
+const business = require("../model/Business");
+const dashboardData = require("../dashboard/dashboard")
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
@@ -161,6 +163,17 @@ const logOut = (req, res) => {
   res.cookie("token", "", { expires: new Date(0) }).json({ message: "User successfully logged out" });
 };
 
+const dashboard = (req, res) => {
+  const { token } = req.cookies;
+
+  jwt.verify(token, secret, {}, (err, user) => {
+    if (err) {
+      return res.status(401).json({ error: 'Authentication failed' });
+    }
+    return res.status(200).json(user);
+  });
+};
+
 
 
 
@@ -174,5 +187,6 @@ module.exports = {
   login,
   resetPassword,
   logOut,
-  updatePassword
+  updatePassword,
+  dashboard
 }

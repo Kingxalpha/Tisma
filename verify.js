@@ -15,7 +15,3 @@ try {
   // Token is invalid or malformed
   console.error(error);
 }
-
-// jwt.verify(token, 'shhhhh', function(err, decoded) {
-//     console.log(decoded.foo) // bar
-//   });

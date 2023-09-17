@@ -33,12 +33,12 @@ const UserSchema = new mongoose.Schema({
             default: false,
         },
         followers :{
-            type: Number,
-            default: 0,
+            type: Array,
+            default: [],
         },
         followings :{
-            type: Number,
-            default: 0,
+            type: Array,
+            default: [],
         },
         bvn: {
             type: String,

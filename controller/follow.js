@@ -1,98 +1,95 @@
 const mongoose = require("mongoose");
-const userModel = require("../model/User");
 const jwt = require("jsonwebtoken");
+const user = require("../model/User")
 const secretkey = process.env.secret_key;
-const token = process.env.token;
 
 // to follow a business
 
-// const followUp = async(req, res)=>{
-//     const {userId} = req.params;
-//     const {followerId} = req.body;
+// const followUp = async (req, res) => {
+//     const busId = req.params['id'];
 
-//     try{
-//         const followership = new followership({follower: followerId, following: userId});
-//         await followership.save();
+//     try {
+//         const loggedInUser = jwt.verify(token, 'secretkey')
+//         if (!loggedInUser) {
+//             return res.json({ message: "You need to login to follow a business" });
+//         }
 
-//         await userModel.findByIdAndUpdate(userId, {$inc: {followers: 1 }});
+//         const business = await userModel.findById(busId);
 
-//         await userModel.findByIdAndUpdate(followerId, {$inc: {followings: 1 }});
+//         if (!business) {
+//             return res.json({ message: "No business profile for this user!" });
+//         }
 
-//         res.status(201).json({msg: "Followed Successfully"});
-//     }catch(error){
-//         console.error(error);
-//         res.status(500).json({error: "Could not follow user"})
+//         business.followers += 1; // Increment the followers count
+//         await business.save(); // Save the updated business object
+
+//         res.json({ message: "Successfully followed the business" });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: "Internal server error" });
 //     }
 // };
-const followUp = async (req, res) => {
-    const busId = req.params['id'];
 
-    try {
-        const loggedInUser = jwt.verify(token, 'secretkey')
-        if (!loggedInUser) {
-            return res.json({ message: "You need to login to follow a business" });
-        }
-
-        const business = await userModel.findById(busId);
-
-        if (!business) {
-            return res.json({ message: "No business profile for this user!" });
-        }
-
-        business.followers += 1; // Increment the followers count
-        await business.save(); // Save the updated business object
-
-        res.json({ message: "Successfully followed the business" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Internal server error" });
-    }
+// POST /api/users/:userId/follow
+function authenticateJWT(req, res, next) {
+    const token = req.header('Authorization');
+    if (!token) return res.status(401).json({ message: 'Unauthorized' });
+  
+    jwt.verify(token, 'secretkey', (err, user) => {
+      if (err) return res.status(403).json({ message: 'Forbidden' });
+  
+      req.user = user;
+      next();
+    });
 };
 
-// const follower = async(req, res)=>{
-//     const busId = req.params['id']
-//     const loggedInUser = jwt.verify(token, secretkey );
-//     if(!loggedInUser){
-//         res.json({message: "You need to login to follow a business"})
-//     }
-//     const business = await userModel.findById({_id : busId});
+  
+const follow = async (req, res) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await user.findById(req.params.id);
+      const currentUser = await user.findById(req.body.userId);
+      if (!user.followers.includes(req.body.userId)) {
+        await user.updateOne({ $push: { followers: req.body.userId } });
+        await currentUser.updateOne({ $push: { followings: req.params.id } });
+        res.status(200).json("user has been followed");
+      } else {
+        res.status(403).json("you already follow this user");
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json("you cant follow yourself");
+  }
+};
+  
+  // POST /api/users/:userId/unfollow
+ const unfollow = async (req, res) => {
+    if (req.body.userId !== req.params.id) {
+      try {
+        const user = await user.findById(req.params.id);
+        const currentUser = await user.findById(req.body.userId);
+        if (user.followers.includes(req.body.userId)) {
+          await user.updateOne({ $pull: { followers: req.body.userId } });
+          await currentUser.updateOne({ $pull: { followings: req.params.id } });
+          res.status(200).json("user has been unfollowed");
+        } else {
+          res.status(403).json("you dont follow this user");
+        }
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(403).json("you cant unfollow yourself");
+    }
+  };
 
-//     if(!business){
-//         res.json({message: "No business profile for this user!"})
-//     }
-
-//     business.followers +1
-//     business.save() 
-//          res.json({ message: "Successfully followed the business" });
-//     } catch (err) {
-//             console.error(err);
-//             res.status(500).json({ message: "Internal server error" });
-//         }
-// };
-// to unfollow a business
-
-// const unfollowUp = async(req, res)=>{
-//     const {userId} = req.params;
-//     const {followerId} = req.body;
-
-
-//     try{
-//         const followership = new followership({follower: followerId, following: userId});
-
-//         await followership.findOneAndDelete({follower: followerId, following: userId});
-
-//         await userModel.findByIdAndUpdate(userId, {$inc: {followers: -1 }});
-
-//         await userModel.findByIdAndUpdate(followerId, {$inc: {followings: -1 }});
-
-//         res.json({msg: "Unfollowed Successfully"});
-//     }catch(error){
-//         console.error(error);
-//         res.status(500).json({error: "Could not unfollow user"})
-//     }
-// };
+  
 
 module.exports = {
-    followUp,
-    // unfollowUp
+    follow,
+    unfollow,
 }
+
+

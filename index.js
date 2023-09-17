@@ -5,7 +5,8 @@ const connectDB = require("./db/connectDB");
 const bodyParser = require("body-parser");
 const port = 8000;
 const user = require("./model/User");
-const Product= require("./model/Product")
+const Product= require("./model/Product");
+const Business = require("./model/Business");
 const multer  = require("multer");
 const router = require("./routes/handler");
 
