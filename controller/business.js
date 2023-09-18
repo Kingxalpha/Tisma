@@ -13,6 +13,7 @@ const createBusiness = async (req, res)=>{
                 businessaddress,
                 phonenumber,
                 email,
+                description,
                 bvn
             });
             res.json({msg: "New Business Created", alert : newbusiness.businessname});
@@ -41,7 +42,7 @@ const getBusiness = async (req, res) => {
 
 const updateBusiness = async (req, res) => {
     const { id } = req.params;
-    const { businessname, email, phonenumber, businessaddress, bvn } = req.body;
+    const { businessname, email, phonenumber, businessaddress, bvn, description} = req.body;
 
     try {
         const business = await businessModel.findById(id);
@@ -56,6 +57,7 @@ const updateBusiness = async (req, res) => {
         business.phonenumber = phonenumber;
         business.businessaddress = businessaddress;
         business.bvn = bvn;
+        business.description = description;
 
         await business.save();
 
@@ -69,7 +71,7 @@ const updateBusiness = async (req, res) => {
 // Delete A Business Page
 
 const deleteBusiness = async (req, res) => {
-    const { id } = req.params; // Assuming you pass the business ID in the URL params
+    const { id } = req.params;
 
     try {
         const business = await businessModel.findById(id);

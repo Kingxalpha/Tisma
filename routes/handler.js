@@ -24,8 +24,8 @@ router.route("/upload/product").post(upload.single('image'), addProduct)
 router.route("/product").get(getProduct)
 router.route("/createbusiness").post(createBusiness);
 router.route("/business").get(getBusiness);
-router.route("/updatebusiness").patch(updateBusiness);
-router.route("/deletebusiness").delete(deleteBusiness);
+router.route("/:userid/updatebusiness").patch(updateBusiness);
+router.route("/:userid/deletebusiness").delete(deleteBusiness);
 
 
 

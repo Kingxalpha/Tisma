@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const BusinessSchema = new mongoose.Schema({
         businessname: {
             type: String,
-            required:true
+            required: [true, "Business name is required!"],
         },
         email : {
             type: String,
@@ -16,7 +16,12 @@ const BusinessSchema = new mongoose.Schema({
         },
         businessaddress: {
             type:String,
-            required:true
+            required: [true, "Business Address is required!"],
+        },
+        description :{
+            type: String,
+            required: [true, "business Description is required!"],
+            wordlimit:250,
         },
         isAdmin :{
             type:Boolean,
@@ -29,7 +34,6 @@ const BusinessSchema = new mongoose.Schema({
             type:String,
         },
 },
-    {timestamps:true}
 );
 
 

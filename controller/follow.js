@@ -30,7 +30,7 @@ const secretkey = process.env.secret_key;
 //     }
 // };
 
-// POST /api/users/:userId/follow
+// AUTHENTICATION
 function authenticateJWT(req, res, next) {
     const token = req.header('Authorization');
     if (!token) return res.status(401).json({ message: 'Unauthorized' });
@@ -43,7 +43,8 @@ function authenticateJWT(req, res, next) {
     });
 };
 
-  
+  // FOLLOW
+
 const follow = async (req, res) => {
   if (req.body.userId !== req.params.id) {
     try {
@@ -64,7 +65,8 @@ const follow = async (req, res) => {
   }
 };
   
-  // POST /api/users/:userId/unfollow
+  // UNFOLLOW
+
  const unfollow = async (req, res) => {
     if (req.body.userId !== req.params.id) {
       try {
