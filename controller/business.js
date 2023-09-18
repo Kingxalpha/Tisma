@@ -1,31 +1,41 @@
 const businessModel = require("../model/Business");
 const userModel = require("../model/User");
+const jwt = require("jsonwebtoken");
+const secretkey = process.env.secret_key;
+const cookieParser = require("cookie-parser");
 
 // Create New Business Page...
 
-const createBusiness = async (req, res)=>{
+const createBusiness = async (req, res) => {
     const { businessname, email, phonenumber, businessaddress, bvn } = req.body;
-    try{
-        const newbusiness = await userModel.findOne({email});
-        if(!newbusiness){
-            const business = await businessModel.create({
-                businessname,
-                businessaddress,
-                phonenumber,
-                email,
-                description,
-                bvn
-            });
-            res.json({msg: "New Business Created", alert : newbusiness.businessname});
-        } else{
-            res.status(409).json({msg: "Business Already Exist"});
+  
+    try {
+    const token = res.cookies.token;
+      jwt.verify(token, secretkey, {}, async (err, user) => {
+        if (err) {
+          return res.status(401).json({ error: 'Authentication failed' });
         }
-    }catch (error){
-        console.error(error);
-        res.status(500).json({msg: "Server Error"});
+        const newbusiness = user;
+  
+        if (!newbusiness) {
+          const business = await businessModel.create({
+            businessname,
+            businessaddress,
+            phonenumber,
+            email,
+            description,
+            bvn
+          });
+          return res.json({ msg: 'New Business Created', business });
+        } else {
+          return res.status(409).json({ msg: 'Business Already Exists' });
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ msg: 'Server Error' });
     }
-};
-
+  };
 // Get Business Page
 
 const getBusiness = async (req, res) => {

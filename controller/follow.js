@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const user = require("../model/User")
+const user = require("../model/User");
+const userModel = require("../model/User");
+// const userModel = require("../model/User");
 const secretkey = process.env.secret_key;
 
 // to follow a business
@@ -48,7 +50,7 @@ function authenticateJWT(req, res, next) {
 const follow = async (req, res) => {
   if (req.body.userId !== req.params.id) {
     try {
-      const user = await user.findById(req.params.id);
+      const user = await userModel.findById(req.params.id);
       const currentUser = await user.findById(req.body.userId);
       if (!user.followers.includes(req.body.userId)) {
         await user.updateOne({ $push: { followers: req.body.userId } });
