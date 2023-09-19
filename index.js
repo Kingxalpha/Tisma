@@ -9,6 +9,7 @@ const Product= require("./model/Product");
 const Business = require("./model/Business");
 const multer  = require("multer");
 const router = require("./routes/handler");
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -16,6 +17,7 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/tisma/v1", router)
 
