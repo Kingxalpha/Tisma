@@ -2,10 +2,10 @@ const User = require('../model/User');
 
 const UserProfile = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    // const userId = req.params.email;
 
     
-    const user = await User.findById(userId)
+    const user = await User.findOne({email: req.params.email})
       .populate('followers', 'fullname')
       .populate('followings', 'fullname'); 
 

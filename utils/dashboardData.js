@@ -13,7 +13,6 @@ const dashboardData = async (req, res) => {
             const userData = req.user;
             
             const user_data = await User.findOne({
-                fullname: userData.fullname,
                 email: userData.email
             });
             
