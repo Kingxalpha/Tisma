@@ -33,6 +33,7 @@ router.route("/createbusiness").post(createBusiness);
 router.route("/business").get(getBusiness);
 router.route("/updatebusiness/:id").patch(updateBusiness);
 router.route("/deletebusiness/:id").delete(deleteBusiness);
+router.route("/contactform").post(contactForm)
 
 
 
