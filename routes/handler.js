@@ -7,25 +7,30 @@ const contactForm = require("../controller/contact");
 const { addProduct, getProduct } = require("../controller/controller");
 const {follow, unfollow } = require("../controller/follow");
 const { createBusiness, getBusiness, updateBusiness, deleteBusiness } = require("../controller/business");
+const validateToken = require("../verifytoken");
+const logoutMiddleware = require('../controller/auth');
+const auth = require('../verifytoken');
+const dashboardData = require("../utils/dashboardData");
+const { UserProfile } = require("../controller/profile");
 
 const router = express.Router();
 
-
-
-router.route("/contact").post(contactForm);
+router.route("/profile/:email").get(UserProfile)
+router.route("/dashboard").post(dashboardData)
+router.route("/contact").post(auth, contactForm);
 router.route("/signup").post(signUp);
 router.route("/login").post(login);
-router.route("/reset-password").post(resetPassword);
+router.route("/reset-password").post(auth, resetPassword);
 router.route("/logout").post(logOut);
-router.route("/updatepassword").patch(updatePassword);
-router.route("/:userId/follow").put(follow);
-router.route("/:userId/unfollow").put(unfollow);
+router.route("/updatepassword").patch(auth, updatePassword);
+router.route("/follow/:userId").patch(follow);
+router.route("unfollow/:userId").patch(unfollow);
 router.route("/upload/product").post(upload.single('image'), addProduct)
 router.route("/product").get(getProduct)
 router.route("/createbusiness").post(createBusiness);
 router.route("/business").get(getBusiness);
-router.route("/updatebusiness").patch(updateBusiness);
-router.route("/deletebusiness").delete(deleteBusiness);
+router.route("/:userid/updatebusiness").patch(updateBusiness);
+router.route("/:userid/deletebusiness").delete(deleteBusiness);
 
 
 

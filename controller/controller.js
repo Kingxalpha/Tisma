@@ -6,17 +6,14 @@ const secretkey = process.env.secret_key;
 const cookieParser = require("cookie-parser");
 express().use(cookieParser())
 const productModel = require("../model/Product");
+const dashboardData = require("../utils/dashboardData");
 const fs= require("fs")
 const token= process.env.token_new
 
 
 const upload = multer({ dest: 'uploads/' })
 
-
-
-
-
-// Posting a product
+  // Posting a product
 const addProduct= async(req,res)=>{
     const token  = req.headers.authorization;
     const {originalname, path} = req.file;
@@ -109,6 +106,4 @@ const getProduct= async(req,res)=>{
     module.exports ={
     addProduct,
     getProduct,
-    deleteProduct,
-    updateProduct,
  }

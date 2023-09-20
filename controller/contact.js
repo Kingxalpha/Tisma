@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 // Contact form route
 const contactForm = async (req, res) =>{
     try {
-        const { name, email, message } = req.body;
+        const { name, email, purposeofmessage, message } = req.body;
 
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
@@ -19,7 +19,7 @@ const contactForm = async (req, res) =>{
             from: ({email:req.body.email}),
             to: process.env.EMAIL_USERNAME,
             subject: 'New Contact Form Submission',
-            text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+            text: `Name: ${name}\nEmail: ${email}\nPurpose Of Message: ${purposeofmessage}\nMessage: ${message}`,
         };
 
         // Send email
