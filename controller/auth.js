@@ -59,10 +59,8 @@ const login = async (req, res) => {
     if (!validPassword) {
       return res.status(400).json("Wrong password");
     }
-    jwt.sign({ email, id: user._id }, secretkey, {}, (error, token) => {
-      if (error) throw new error
-      res.cookie("token", token).json({ "msg": "User successfully logged in!", "user": user })
-    });
+    const token= jwt.sign({email,_id: user._id}, process.env.TOKEN_SECRET); 
+    res.header('auth-token', token).send(token);
   } catch (err) {
     res.status(500).json(err);
   }

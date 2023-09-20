@@ -1,4 +1,5 @@
 const express = require("express");
+const User = require('../model/User')
 const bodyParser= require("body-parser");
 const multer= require("multer")
 const jwt = require('jsonwebtoken');
@@ -8,14 +9,18 @@ express().use(cookieParser())
 const productModel = require("../model/Product");
 const dashboardData = require("../utils/dashboardData");
 const fs= require("fs")
-const token= process.env.token_new
+const auth= require("../verifytoken")
 
 
 const upload = multer({ dest: 'uploads/' })
 
   // Posting a product
 const addProduct= async(req,res)=>{
-    const token  = req.headers.authorization;
+    auth(req, res, async (err) => {
+        if (err) {
+          return res.status(401).json({ error: 'Authentication failed' });
+        };
+
     const {originalname, path} = req.file;
     const part= originalname.split(".");
     const ext= part[part.length -1];
@@ -26,14 +31,11 @@ const addProduct= async(req,res)=>{
     const {title, price, description, available_product, negotiation, whatsapp} = req.body;
     const whatsapp_link = `https://wa.me/${whatsapp}`
     const {image} = req.file
-    jwt.verify(token, secretkey, {}, async(err, user)=>{
-    if(err){
-       return res.json(err)
-    }
-    const userId = user.details.name;
-    const product =  await productModel.find().populate("owner")
+    // const userId = User.details.name;
+    
+    const product =  await productModel.find().populate("title")
     if (product.length>=10) {
-        res.json({msg:"Kindly Subcribe to VIP to upload morethan 10product"});
+        res.json({msg:"Kindly Subcribe to Premium to upload morethan 10 product"});
    }else{
     try {
         const newProduct= await productModel.create({
@@ -62,6 +64,8 @@ const addProduct= async(req,res)=>{
 // getting a product
 
 const getProduct= async(req,res)=>{
+    
+
     try {
         const product= await productModel.find();
         res.json(product);
@@ -106,4 +110,6 @@ const getProduct= async(req,res)=>{
     module.exports ={
     addProduct,
     getProduct,
+    updateProduct,
+    deleteProduct
  }

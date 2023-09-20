@@ -4,7 +4,7 @@ const multer= require("multer")
 const upload = multer({ dest: "uploads/" });
 const { signUp, login, resetPassword, logOut, updatePassword } = require("../controller/auth");
 const contactForm = require("../controller/contact");
-const { addProduct, getProduct } = require("../controller/controller");
+const { addProduct, getProduct, updateProduct, deleteProduct } = require("../controller/controller");
 const {follow, unfollow } = require("../controller/follow");
 const { createBusiness, getBusiness, updateBusiness, deleteBusiness } = require("../controller/business");
 const validateToken = require("../verifytoken");
@@ -27,10 +27,12 @@ router.route("/follow/:userId").patch(follow);
 router.route("unfollow/:userId").patch(unfollow);
 router.route("/upload/product").post(upload.single('image'), addProduct)
 router.route("/product").get(getProduct)
+router.route("/product/:id").delete(deleteProduct)
+router.route("/product/:id").patch(updateProduct)
 router.route("/createbusiness").post(createBusiness);
 router.route("/business").get(getBusiness);
-router.route("/:userid/updatebusiness").patch(updateBusiness);
-router.route("/:userid/deletebusiness").delete(deleteBusiness);
+router.route("/updatebusiness/:id").patch(updateBusiness);
+router.route("/deletebusiness/:id").delete(deleteBusiness);
 
 
 
