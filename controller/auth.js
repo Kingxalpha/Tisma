@@ -62,7 +62,7 @@ const login = async (req, res) => {
     }
     jwt.sign({ email, id: user._id }, secretkey, {}, (error, token) => {
       if (error) throw new error
-      res.cookie("token", token).json({ "msg": "User successfully logged in!", "user": user })
+      res.cookie("token", token).json({ token })
     });
   } catch (err) {
     res.status(500).json(err);
