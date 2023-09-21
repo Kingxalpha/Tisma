@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const {Schema} = require("mongoose")
 
 const UserSchema = new mongoose.Schema({
         fullname : {
             type: String,
             required: true,
+        },
+        business:{
+            type:Schema.ObjectId,
+            ref:'Business'
         },
         businessname: {
             type: String,
@@ -32,10 +37,10 @@ const UserSchema = new mongoose.Schema({
             type:Boolean,
             default: false,
         },
-        followers :[{
+        followers :{
             type:mongoose.Schema.Types.ObjectId,
             ref: 'User'
-        }],
+        },
         followings :[{
             type:mongoose.Schema.Types.ObjectId,
             ref: 'User'
@@ -46,6 +51,11 @@ const UserSchema = new mongoose.Schema({
         bc:{
             type:String,
         },
+        product:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+        
 },
     {timestamps:true}
 );
