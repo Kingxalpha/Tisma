@@ -14,13 +14,13 @@ const dashboardData = async (req, res) => {
             
             const user_data = await User.findOne({
                 email: userData.email
-            });
+            }).populate("Business")
             
             if (!user_data) {
                 throw new Error("User not found");
             }
 
-            return res.json(user_data);
+            return res.json(userData);
         } catch (error) {
             console.error(error);
             res.status(500).json({ msg: 'Server Error' });

@@ -33,6 +33,10 @@ const BusinessSchema = new mongoose.Schema({
         bc:{
             type:String,
         },
+        owner:{
+            type:mongoose.Schema.ObjectId,
+            ref:'User'
+        }
 },
 );
 
