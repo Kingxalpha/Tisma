@@ -25,7 +25,7 @@ router.route("/logout").post(logOut);
 router.route("/updatepassword").patch(auth, updatePassword);
 router.route("/follow/:userId").patch(follow);
 router.route("unfollow/:userId").patch(unfollow);
-router.route("/upload/product").post(upload.array('photos', 3), addProduct)
+router.route("/upload/product").post(upload.array('image', 3), addProduct)
 router.route("/product").get(getProduct)
 router.route("/product/:id").delete(deleteProduct)
 router.route("/product/:id").patch(updateProduct)
