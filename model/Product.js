@@ -1,6 +1,7 @@
 const multer  = require('multer');
 const mongoose = require("mongoose");
 
+
 const ProductSchema = new mongoose.Schema({
         title : {
             type: String,
@@ -24,7 +25,11 @@ const ProductSchema = new mongoose.Schema({
         },
         image:{
             type: String,
-            required: true,
+            required: false,
+        },
+        owner:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"user"
         }
 
     });

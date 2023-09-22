@@ -9,7 +9,8 @@ express().use(cookieParser())
 const productModel = require("../model/Product");
 const dashboardData = require("../utils/dashboardData");
 const fs= require("fs")
-const auth= require("../verifytoken")
+const auth= require("../verifytoken");
+const userModel = require("../model/User");
 
 
 const upload = multer({ dest: 'uploads/' })
@@ -21,20 +22,20 @@ const addProduct= async(req,res)=>{
           return res.status(401).json({ error: 'Authentication failed' });
         };
 
-    const {originalname, path} = req.file;
-    const part= originalname.split(".");
-    const ext= part[part.length -1];
-    const newPath= `${path}.${ext}`;
-    fs.renameSync(path, newPath)
+    // const {originalname, path} = req.file;
+    // const part= originalname.split(".");
+    // const ext= part[part.length -1];
+    // const newPath= `${path}.${ext}`;
+    // fs.renameSync(path, newPath)
 
 
     const {title, price, description, available_product, negotiation, whatsapp} = req.body;
     const whatsapp_link = `https://wa.me/${whatsapp}`
-    const {image} = req.file
-    // const userId = User.details.name;
+    // const {image} = req.file
+    const userID = req.user_id;
     
-    const product =  await productModel.find().populate("title")
-    if (product.length>=10) {
+    const userProduct =  await userModel.findOne().populate(".owner")
+    if (product.length===10) {
         res.json({msg:"Kindly Subcribe to Premium to upload morethan 10 product"});
    }else{
     try {
