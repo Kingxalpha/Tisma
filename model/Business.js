@@ -38,7 +38,7 @@ const BusinessSchema = new mongoose.Schema({
             ref:'User'
         },
 },
-
+    {'strictPopulate':false}
 );
 
 
