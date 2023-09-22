@@ -1,6 +1,7 @@
+const { Timestamp } = require('mongodb');
 const mongoose = require('mongoose');
 
-const ContactSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
     fullname:{
         type:String,
         required:true
@@ -17,8 +18,15 @@ const ContactSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-});
+    Read:{
+        type:Boolean,
+        default:false
+    },
 
-const contactModel = mongoose.model("Contact", ContactSchema);
+},
+    {timestamps:new Date()},
+);
 
-module.exports = contactModel;
+const messageModel = mongoose.model("Message", messageSchema);
+
+module.exports = messageModel;

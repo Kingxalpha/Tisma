@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const {Schema} = require("mongoose")
 
 const UserSchema = new mongoose.Schema({
         fullname : {
@@ -8,7 +7,7 @@ const UserSchema = new mongoose.Schema({
             required: true,
         },
         business:{
-            type:Schema.ObjectId,
+            type:mongoose.Schema.ObjectId,
             ref:'Business'
         },
         businessname: {
@@ -57,7 +56,8 @@ const UserSchema = new mongoose.Schema({
         }
         
 },
-    {timestamps:true}
+    {timestamps:true},
+    {strictPopulate:false}
 );
 
 

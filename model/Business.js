@@ -5,7 +5,7 @@ const BusinessSchema = new mongoose.Schema({
             type: String,
             required: [true, "Business name is required!"],
         },
-        email : {
+        businessemail : {
             type: String,
             required: true,
             unique: true,
@@ -36,8 +36,9 @@ const BusinessSchema = new mongoose.Schema({
         owner:{
             type:mongoose.Schema.ObjectId,
             ref:'User'
-        }
+        },
 },
+
 );
 
 

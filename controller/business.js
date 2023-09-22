@@ -13,21 +13,18 @@ const createBusiness = async (req, res) => {
       return res.status(401).json({ error: 'Authentication failed' });
     }
     
-    const { businessname, email, phonenumber, businessaddress, bvn, description} = req.body;
+    const { businessname, businessemail, phonenumber, businessaddress, bvn, description} = req.body;
 
     try {
-      const user = req.user;
-
       // Check if a business already exists for this user
-      const existingBusiness = await businessModel.findOne({ user: user._id });
+      const existingBusiness = await businessModel.findOne({businessemail});
 
       if (!existingBusiness) {
         const business = await businessModel.create({
-          user: user._id,
           businessname,
           businessaddress,
           phonenumber,
-          email,
+          businessemail,
           description,
           bvn,
         });
@@ -40,8 +37,8 @@ const createBusiness = async (req, res) => {
       res.status(500).json({ msg: 'Server Error' });
     }
   });
-};
 
+};
 // Get Business Page
 
 const getBusiness = async (req, res) => {
@@ -49,23 +46,22 @@ const getBusiness = async (req, res) => {
     if (err) {
       return res.status(401).json({ error: 'Authentication failed' });
     }
+  try {
+    const { businessId } = req.params;
+    const business = await businessModel.findById(businessId);
 
-    const { _id } = req.params;
-
-    try {
-      const business = await businessModel.findById(_id);
-
-      if (!business) {
-        return res.status(404).json({ msg: 'Business not found' });
-      }
-
-      return res.json({ business });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: 'Server Error' });
+    if (!business) {
+      return res.status(404).json({ msg: 'Business not found' });
     }
-  });
+
+    return res.json({ business });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+});
 };
+
 
 // Update Business Page
 
@@ -74,28 +70,31 @@ const updateBusiness = async (req, res) => {
     if (err) {
       return res.status(401).json({ error: 'Authentication failed' });
     }
+  try {
+    const { businessId } = req.params;
+    const updateData = req.body; // Update data from request body
 
-    const { _id } = req.params;
-    const updates = req.body;
+    console.log('Updating business with ID:', businessId);
+    console.log('Update data:', updateData);
+    // Use findByIdAndUpdate to update the business
+    const updatedBusiness = await businessModel.findByIdAndUpdate(
+      businessId,
+      updateData,
+      { new: true,runValidators :true } // Return the updated document
+    );
 
-    try {
-      const updatedBusiness = await businessModel.findByIdAndUpdate(
-        _id,
-        updates,
-        { new: true }
-      );
-
-      if (!updatedBusiness) {
-        return res.status(404).json({ msg: 'Business not found' });
-      }
-
-      return res.json({ msg: 'Business updated successfully', business: updatedBusiness });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: 'Server Error' });
+    if (!updatedBusiness) {
+      return res.status(404).json({ msg: 'Business not found' });
     }
-  });
+
+    return res.json({ msg: 'Business updated', business: updatedBusiness });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+});
 };
+
 
 
 // Delete A Business Page
@@ -105,23 +104,26 @@ const deleteBusiness = async (req, res) => {
     if (err) {
       return res.status(401).json({ error: 'Authentication failed' });
     }
+  try {
+    const { businessId } = req.params;
 
-    const { _id } = req.params;
+    // Use findByIdAndDelete to delete the business
+    const deletedBusiness = await businessModel.findByIdAndDelete(
+      businessId
+    );
 
-    try {
-      const deletedBusiness = await businessModel.findByIdAndRemove(_id);
-
-      if (!deletedBusiness) {
-        return res.status(404).json({ msg: 'Business not found' });
-      }
-
-      return res.json({ msg: 'Business deleted successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: 'Server Error' });
+    if (!deletedBusiness) {
+      return res.status(404).json({ msg: 'Business not found' });
     }
-  });
+
+    return res.json({ msg: 'Business deleted', business: deletedBusiness });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+});
 };
+
 
 module.exports = {
     createBusiness,

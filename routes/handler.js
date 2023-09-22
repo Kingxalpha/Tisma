@@ -12,12 +12,13 @@ const logoutMiddleware = require('../controller/auth');
 const auth = require('../verifytoken');
 const dashboardData = require("../utils/dashboardData");
 const { UserProfile } = require("../controller/profile");
+const { createMessage, getMessage, msgRead } = require("../controller/messageForm");
 
 const router = express.Router();
 
 router.route("/profile/:email").get(UserProfile)
 router.route("/dashboard").post(dashboardData)
-router.route("/contact").post(auth, contactForm);
+router.route("/contact").post( contactForm);
 router.route("/signup").post(signUp);
 router.route("/login").post(login);
 router.route("/reset-password").post(auth, resetPassword);
@@ -30,10 +31,12 @@ router.route("/product").get(getProduct)
 router.route("/product/:id").delete(deleteProduct)
 router.route("/product/:id").patch(updateProduct)
 router.route("/createbusiness").post(createBusiness);
-router.route("/business").get(getBusiness);
-router.route("/updatebusiness/:id").patch(updateBusiness);
-router.route("/deletebusiness/:id").delete(deleteBusiness);
-router.route("/contactform").post(contactForm)
+router.route("/getbusiness/:businessId").get(getBusiness);
+router.route("/updatebusiness/:businessId").put(updateBusiness);
+router.route("/deletebusiness/:businessId").delete(deleteBusiness);
+router.route("/createmessage").post(createMessage);
+router.route("/getmessage").get( auth, getMessage);
+router.route("/message/:messageId/read").put(msgRead);
 
 
 
