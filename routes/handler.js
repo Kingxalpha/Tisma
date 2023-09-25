@@ -4,7 +4,7 @@ const multer= require("multer")
 const upload = multer({ dest: "uploads/" });
 const { signUp, login, resetPassword, logOut, updatePassword } = require("../controller/auth");
 const contactForm = require("../controller/contact");
-const { addProduct, getProduct, updateProduct, deleteProduct } = require("../controller/controller");
+const { addProduct, getProduct, updateProduct, deleteProduct, businessProfile } = require("../controller/controller");
 const {follow, unfollow } = require("../controller/follow");
 const { createBusiness, getBusiness, updateBusiness, deleteBusiness } = require("../controller/business");
 const validateToken = require("../verifytoken");
@@ -13,6 +13,7 @@ const auth = require('../verifytoken');
 const dashboardData = require("../utils/dashboardData");
 const { UserProfile } = require("../controller/profile");
 const { createMessage, getMessage, msgRead } = require("../controller/messageForm");
+
 
 const router = express.Router();
 
@@ -37,6 +38,7 @@ router.route("/deletebusiness/:businessId").delete(deleteBusiness);
 router.route("/createmessage").post(createMessage);
 router.route("/getmessage").get( auth, getMessage);
 router.route("/message/:messageId/read").put(msgRead);
+router.route("/business-profile").post(businessProfile)
 
 
 

@@ -58,7 +58,8 @@ const UserSchema = new mongoose.Schema({
             type:String,
         },
         tokenExpiration:{
-            type: Date()
+            type:String,
+            default: Date()
         }
         
 },

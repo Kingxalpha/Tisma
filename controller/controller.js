@@ -11,6 +11,8 @@ const dashboardData = require("../utils/dashboardData");
 const fs= require("fs")
 const auth= require("../verifytoken");
 const userModel = require("../model/User");
+const profile = require('../model/BizProfile');
+const profileModel = require("../model/BizProfile");
 
 
 const upload = multer({ dest: 'uploads/' })
@@ -106,11 +108,21 @@ const getProduct= async(req,res)=>{
         }
       }
 
+        // business profile...
+        const businessProfile = async (req, res) =>{
+          try {
+            const profile = new profileModel(req.body);
+            await profile.save();
+            res.status(201).json(profile);
+          } catch (error) {
+            res.status(500).json({ error: 'Could not create profile' });
+          }
+        };
         
-
     module.exports ={
     addProduct,
     getProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    businessProfile
  }
