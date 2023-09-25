@@ -4,6 +4,7 @@ const BusinessSchema = new mongoose.Schema({
         businessname: {
             type: String,
             required: [true, "Business name is required!"],
+            ref: 'Businessname'
         },
         businessemail : {
             type: String,

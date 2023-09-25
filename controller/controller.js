@@ -7,6 +7,8 @@ const secretkey = process.env.secret_key;
 const cookieParser = require("cookie-parser");
 express().use(cookieParser())
 const productModel = require("../model/Product");
+const userModel = require("../model/User");
+const businessModel = require("../model/Business");
 const dashboardData = require("../utils/dashboardData");
 const fs= require("fs")
 const auth= require("../verifytoken");
@@ -24,41 +26,48 @@ const addProduct= async(req,res)=>{
           return res.status(401).json({ error: 'Authentication failed' });
         };
 
-    // const {originalname, path} = req.file;
-    // const part= originalname.split(".");
-    // const ext= part[part.length -1];
-    // const newPath= `${path}.${ext}`;
-    // fs.renameSync(path, newPath)
+    const {originalname, path} = req.file;
+    const part= originalname.split(".");
+    const ext= part[part.length -1];
+    const newPath= `${path}.${ext}`;
+    fs.renameSync(path, newPath)
+
+    
 
 
     const {title, price, description, available_product, negotiation, whatsapp} = req.body;
     const whatsapp_link = `https://wa.me/${whatsapp}`
-    // const {image} = req.file
-    const userID = req.user_id;
+    const {image} = req.file;
     
-    const userProduct =  await userModel.findOne().populate(".owner")
-    if (product.length===10) {
-        res.json({msg:"Kindly Subcribe to Premium to upload morethan 10 product"});
-   }else{
-    try {
-        const newProduct= await productModel.create({
-             title,
-             price,
-             description,
-             available_product,
-             negotiation,
-             whatsapp: whatsapp_link,
-             image : newPath,
-        }); 
-        console.log(newProduct);
-        res.json({msg:"new product  added successfully", alert : newProduct.title});
-     } catch (error) {
-         console.error(error);
-         res.status(500).json({msg: "an error occured while adding product"})
-     }
-   }
+    // console.log(product);
+
+    // if(userProduct){
+    //     const totalProduct = userProduct.filter((product)=>{
+    //         if(userProduct.product.length === 10){
+    //             return res.json({msg: "PLEASE SUBSCRIBE TO VIP"})
+    //         }
+    //     })
+        try {
+          const newProduct= await productModel.create({
+               title,
+               price,
+               description,
+               available_product,
+               negotiation,
+               whatsapp: whatsapp_link,
+               image : newPath,
+          }); 
+          console.log(newProduct);
+          res.json({msg:"new product  added successfully", alert : newProduct.title});
+       } catch (error) {
+           console.error(error);
+           res.status(500).json({msg: "an error occured while adding product"})
+       }
 })
 }
+   
+
+
    
     
 
