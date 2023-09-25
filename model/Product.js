@@ -1,4 +1,3 @@
-const multer  = require('multer');
 const mongoose = require("mongoose");
 
 
@@ -17,20 +16,21 @@ const ProductSchema = new mongoose.Schema({
         },
         quantity: {
             type: Number,
-            required: true,
+            required: false,
         },
         negotiation:{
-            type: String,
+            type: Boolean,
             required: true,
         },
         image:{
             type: String,
             required: false,
         },
-        owner:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"user"
-        }
+        // owner:{
+        //     type:mongoose.Schema.Types.ObjectId,
+        //      ref: "Business",
+        //      required:false
+        // }
 
     });
 
