@@ -12,8 +12,6 @@ const businessModel = require("../model/Business");
 const dashboardData = require("../utils/dashboardData");
 const fs= require("fs")
 const auth= require("../verifytoken");
-const userModel = require("../model/User");
-const profile = require('../model/BizProfile');
 const profileModel = require("../model/BizProfile");
 
 
