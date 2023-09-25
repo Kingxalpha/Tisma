@@ -53,6 +53,12 @@ const UserSchema = new mongoose.Schema({
         product:{
             type:mongoose.Schema.Types.ObjectId,
             ref: 'User'
+        },
+        resetToken:{
+            type:String,
+        },
+        tokenExpiration:{
+            type: Date()
         }
         
 },
