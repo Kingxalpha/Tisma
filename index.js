@@ -10,10 +10,14 @@ const Business = require("./model/Business");
 const multer  = require("multer");
 const router = require("./routes/handler");
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const app = express();
+const corsOption = {
+    origin:'http://localhost:3000'
+}
 
-
+app.use(cors(corsOption));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.json());
