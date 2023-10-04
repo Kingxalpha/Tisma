@@ -15,12 +15,12 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-    origin:'https://localhost:3000',
+    origin:'*',
     credentials:true,
     methods: ['POST', 'GET', 'PATCH', 'DELETE']
 }))
 app.use((req,res,next) =>{
-    res.header('Access-Control-Allow-Origin','https://localhost:3000');
+    res.header('Access-Control-Allow-Origin','*');
     next();
 });
 app.use(bodyParser.urlencoded({extended: true}));
