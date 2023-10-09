@@ -4,41 +4,41 @@ const jwt = require("jsonwebtoken");
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 const cookieParser = require("cookie-parser");
 const auth = require('../verifytoken'); 
+// const passport = require('passport');
 
 // Create New Business Page...
+
+// Middleware to authenticate with JWT
+// const authenticateJWT = passport.authenticate('jwt', { session: false });
+
 const createBusiness = async (req, res) => {
-  // Verifing user
-  auth(req, res, async (err) => {
-    if (err) {
-      return res.status(401).json({ error: 'Authentication failed' });
+  const { businessname, businessemail, phonenumber, businessaddress, bvn, description } = req.body;
+
+  try {
+    // Check if a business already exists for this user
+    const existingBusiness = await businessModel.findOne({ businessemail });
+
+    if (existingBusiness) {
+      return res.status(409).json({ msg: 'Business Already Exists' });
     }
-    
-    const { businessname, businessemail, phonenumber, businessaddress, bvn, description} = req.body;
 
-    try {
-      // Check if a business already exists for this user
-      const existingBusiness = await businessModel.findOne({businessemail});
+    // Create a new business
+    const business = await businessModel.create({
+      businessname,
+      businessaddress,
+      phonenumber,
+      businessemail,
+      description,
+      bvn,
+    });
 
-      if (!existingBusiness) {
-        const business = await businessModel.create({
-          businessname,
-          businessaddress,
-          phonenumber,
-          businessemail,
-          description,
-          bvn,
-        });
-        return res.json({ msg: 'New Business Created', business });
-      } else {
-        return res.status(409).json({ msg: 'Business Already Exists' });
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: 'Server Error' });
-    }
-  });
-
+    return res.json({ msg: 'New Business Created', business });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Server Error' });
+  }
 };
+
 // Get Business Page
 
 const getBusiness = async (req, res) => {

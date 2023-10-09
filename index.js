@@ -11,18 +11,25 @@ const multer  = require("multer");
 const router = require("./routes/handler");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+// require('./passport');
 
 const app = express();
 
-app.use(cors({
-    origin:'*',
-    credentials:true,
-    methods: ['POST', 'GET', 'PATCH', 'DELETE']
-}))
-app.use((req,res,next) =>{
-    res.header('Access-Control-Allow-Origin','*');
-    next();
-});
+// app.use(cors({
+//     origin:'*',
+//     credentials:true,
+//     methods: ['POST', 'GET', 'PATCH', 'DELETE']
+// }))
+// app.use((req,res,next) =>{
+//     res.header('Access-Control-Allow-Origin','*');
+//     next();
+// });
+
+const corsOptions = {
+    origin: 'http://127.0.0.1:5500',
+  };
+  app.use(cors(corsOptions));
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.json());

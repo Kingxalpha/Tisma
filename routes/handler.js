@@ -10,9 +10,11 @@ const { createBusiness, getBusiness, updateBusiness, deleteBusiness } = require(
 const validateToken = require("../verifytoken");
 const logoutMiddleware = require('../controller/auth');
 const auth = require('../verifytoken');
+// const authenticateJWT = require('../passport');
 const dashboardData = require("../utils/dashboardData");
 const { UserProfile } = require("../controller/profile");
 const { createMessage, getMessage, msgRead } = require("../controller/messageForm");
+
 
 
 const router = express.Router();

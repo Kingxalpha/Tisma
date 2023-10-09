@@ -7,6 +7,8 @@ const TOKEN_SECRET = process.env.TOKEN_SECRET;
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const resetToken = process.env.reset_Token;
+// const passport = require('passport');
+// const passportJwt = require('passport-jwt');
 
 
 // const secret_key = crypto.randomBytes(32).toString('hex');
@@ -60,7 +62,7 @@ const login = async (req, res) => {
       return res.status(400).json("Wrong password");
     }
     const token= jwt.sign({email,_id: user._id}, process.env.TOKEN_SECRET); 
-    res.header('auth-token', token).send(token);
+    res.send(token);
   } catch (err) {
     res.status(500).json(err);
   }
